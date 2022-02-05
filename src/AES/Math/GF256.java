@@ -3,6 +3,7 @@ package AES.Math;
 public class GF256 implements Field<GF256>{
 
     private static final int AES_POLYNOMIAL = 283;
+    //x^8 + x^4 + x^3 + x + 1
     private static boolean inverse_table_initialized = false;
     private static byte [] inverse_table = new byte[256];
 
@@ -54,6 +55,10 @@ public class GF256 implements Field<GF256>{
             key *= 2;
         }
 
+        System.out.println(result);
+
+        // modding by polynomial
+
         while(result >= 256){
             int i = 512;
             int mod = AES_POLYNOMIAL;
@@ -62,10 +67,13 @@ public class GF256 implements Field<GF256>{
                 mod *= 2;
             }
             result ^= mod;
-            return new GF256((byte)result);
+            System.out.println(result);
+
         }
 
-        return null;
+        System.out.println(result);
+
+        return new GF256((byte)result);
     }
 
 
@@ -111,7 +119,7 @@ public class GF256 implements Field<GF256>{
     }
 
     public String toString(){
-        byte copy = value;
+        int copy = value < 0? value + 256 : value;
         //System.out.println(value);
         String output = "";
         for(int i = 0; i < 8; i++){
