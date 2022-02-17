@@ -15,4 +15,6 @@ public abstract interface Field<A> {
 
     public A inverse();
 
+    public A se();
+
 }

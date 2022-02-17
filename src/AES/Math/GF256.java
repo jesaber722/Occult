@@ -55,7 +55,7 @@ public class GF256 implements Field<GF256>{
             key *= 2;
         }
 
-        System.out.println(result);
+        //System.out.println(result);
 
         // modding by polynomial
 
@@ -67,11 +67,11 @@ public class GF256 implements Field<GF256>{
                 mod *= 2;
             }
             result ^= mod;
-            System.out.println(result);
+            //System.out.println(result);
 
         }
 
-        System.out.println(result);
+        //System.out.println(result);
 
         return new GF256((byte)result);
     }
@@ -94,13 +94,18 @@ public class GF256 implements Field<GF256>{
         return new GF256(inverse_table[index]);
     }
 
+    @Override
+    public GF256 se() {
+        return this;
+    }
+
     private void initialize_inverse_table() {
         for(byte i = 1; i != 0; i++){
             boolean set = false;
             for(byte j = 1; j != 0; j++){
                 GF256 a = new GF256(i);
                 GF256 b = new GF256(j);
-                if(a.multiply(b).equals(a.getAdditiveIdentity())){
+                if(a.multiply(b).equals(ONE)){
                     int index = i < 0? i + 256 : i;
                     inverse_table[index] = j;
                     set = true;
