@@ -27,6 +27,13 @@ public class AESLibrary {
             "[0]"
     );
 
+    private final static Matrix<GF256> mixColumnMatrix = new Matrix<>(GF256.getSupplier(),
+            "[2 3 1 1]" +
+            "[1 2 3 1]" +
+            "[1 1 2 3]" +
+            "[3 1 1 2]"
+    );
+
     private static byte s(byte n){
         GF256 ng = new GF256(n);
         if(!ng.equals(GF256.ZERO)){
@@ -58,8 +65,58 @@ public class AESLibrary {
         return (byte)result;
     }
 
-    static byte byteSubstitution(byte n){
+    private static byte byteSubstitution(byte n){
         return affineTransformation(s(n));
+    }
+
+    static byte [] subBytes(byte [] txt){
+        byte [] ret = new byte[txt.length];
+        for(int i = 0; i < txt.length; i++){
+            ret[i] = byteSubstitution(txt[i]);
+        }
+        return ret;
+    }
+
+    static byte [] shiftRows(byte [] txt){
+        byte [] ret = new byte[txt.length];
+        ret[0] = txt[0];
+        ret[1] = txt[5];
+        ret[2] = txt[10];
+        ret[3] = txt[15];
+        ret[4] = txt[4];
+        ret[5] = txt[9];
+        ret[6] = txt[14];
+        ret[7] = txt[3];
+        ret[8] = txt[8];
+        ret[9] = txt[13];
+        ret[10] = txt[2];
+        ret[11] = txt[7];
+        ret[12] = txt[12];
+        ret[13] = txt[1];
+        ret[14] = txt[6];
+        ret[15] = txt[11];
+        return ret;
+    }
+
+    private static void mixCol(byte[] txt){
+        byte [] ret = new byte[txt.length];
+        List<List<Ring<GF256>>> inp = new ArrayList<>();
+        for(int i = 0; i < txt.length; i++){
+            List<Ring<GF256>> row = new ArrayList<>();
+            row.add(new GF256(txt[i]));
+            inp.add(row);
+        }
+        Matrix<GF256> inputVector = new Matrix<>(inp);
+        Matrix<GF256> outputVector = mixColumnMatrix.multiply(inputVector);
+        for(int i = 0; i < ret.length; i++){
+            ret[i] = outputVector.get(i, 0).itself().getValue();
+        }
+    }
+
+    static byte [] mixColumn(byte [] txt){
+        byte [] ret = new byte[txt.length];
+        // TODO
+        return null;
     }
 
     public static void main(String[] args){
