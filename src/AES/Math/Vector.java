@@ -1,6 +1,6 @@
 package AES.Math;
 
-public class Vector<A> {
+public class Vector<A extends Field<A>> {
 
     private final Field<A> [] values;
 
@@ -12,6 +12,6 @@ public class Vector<A> {
         if(i >= values.length) {
             throw new IllegalArgumentException(i + " out of range");
         }
-        return values[i].se();
+        return values[i].itself();
     }
 }

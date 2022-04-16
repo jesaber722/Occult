@@ -1,20 +1,37 @@
 package AES.Math;
 
-public abstract interface Field<A> {
+public abstract class Field<A extends Field<A>> {
 
+    public static GF256 ZERO_GF256 = new GF256((byte)0);
 
-    public A getAdditiveIdentity();
+    public Field() {
 
-    public A getMultiplicativeIdentity();
+    }
 
-    public  A add(A b);
+    public Field(String string) {
 
-    public A multiply(A b);
+    }
 
-    public A negative();
+    public static Field getAnyNum(){
+        return null;
+    }
 
-    public A inverse();
+    public abstract A getAdditiveIdentity();
 
-    public A se();
+    public abstract A getMultiplicativeIdentity();
+
+    public  abstract A add(A b);
+
+    public abstract A multiply(A b);
+
+    public abstract A negative();
+
+    public abstract A inverse();
+
+    public abstract A itself();
+
+    public abstract Field<A> fieldOver();
+
+    public abstract A constructFromString(String str);
 
 }

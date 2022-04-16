@@ -1,6 +1,8 @@
 package AES.Math;
 
-public class GF256 implements Field<GF256>{
+import java.util.function.Supplier;
+
+public class GF256 extends Field<GF256>{
 
     private static final int AES_POLYNOMIAL = 283;
     //x^8 + x^4 + x^3 + x + 1
@@ -12,6 +14,23 @@ public class GF256 implements Field<GF256>{
     public static final GF256 TWO = new GF256((byte)2);
 
     private final byte value;
+
+    public static Supplier<GF256> getSupplier(){
+        return new Supplier<GF256>() {
+            @Override
+            public GF256 get() {
+                return new GF256((byte)0);
+            }
+        };
+    }
+
+    public GF256(){
+        value = 0;
+    }
+
+    public GF256(String string){
+        value = (byte)Integer.parseInt(string);
+    }
 
     public GF256(byte v){
         value = v;
@@ -95,8 +114,16 @@ public class GF256 implements Field<GF256>{
     }
 
     @Override
-    public GF256 se() {
+    public GF256 itself() {
         return this;
+    }
+
+    @Override
+    public Field<GF256> fieldOver(){ return this; }
+
+    @Override
+    public GF256 constructFromString(String str) {
+        return new GF256((byte)Integer.parseInt(str));
     }
 
     private void initialize_inverse_table() {
@@ -124,6 +151,8 @@ public class GF256 implements Field<GF256>{
     }
 
     public String toString(){
+        if(value == 0)
+            return "0";
         int copy = value < 0? value + 256 : value;
         //System.out.println(value);
         String output = "";
