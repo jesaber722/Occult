@@ -1,18 +1,18 @@
 package AES.Math;
 
-public abstract class Field<A extends Field<A>> {
+public abstract class Ring<A extends Ring<A>> {
 
     public static GF256 ZERO_GF256 = new GF256((byte)0);
 
-    public Field() {
+    public Ring() {
 
     }
 
-    public Field(String string) {
+    public Ring(String string) {
 
     }
 
-    public static Field getAnyNum(){
+    public static Ring getAnyNum(){
         return null;
     }
 
@@ -30,7 +30,7 @@ public abstract class Field<A extends Field<A>> {
 
     public abstract A itself();
 
-    public abstract Field<A> fieldOver();
+    public abstract Ring<A> fieldOver();
 
     public abstract A constructFromString(String str);
 

@@ -1,10 +1,10 @@
 package AES.Math;
 
-public class Vector<A extends Field<A>> {
+public class Vector<A extends Ring<A>> {
 
-    private final Field<A> [] values;
+    private final Ring<A>[] values;
 
-    Vector(Field<A> [] values){
+    Vector(Ring<A>[] values){
         this.values = values;
     }
 

@@ -2,7 +2,7 @@ package AES.Math;
 
 import java.util.function.Supplier;
 
-public class GF256 extends Field<GF256>{
+public class GF256 extends Ring<GF256> {
 
     private static final int AES_POLYNOMIAL = 283;
     //x^8 + x^4 + x^3 + x + 1
@@ -119,7 +119,7 @@ public class GF256 extends Field<GF256>{
     }
 
     @Override
-    public Field<GF256> fieldOver(){ return this; }
+    public Ring<GF256> fieldOver(){ return this; }
 
     @Override
     public GF256 constructFromString(String str) {

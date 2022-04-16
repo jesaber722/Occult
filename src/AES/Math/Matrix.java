@@ -1,32 +1,32 @@
 package AES.Math;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Matrix<A extends Field<A>> {
+public class Matrix<A extends Ring<A>> {
 
     private Supplier<A> ctor;
 
     private int rows, cols;
 
-    private ArrayList<ArrayList<Field<A>>> values;
-    public Matrix(List<List<Field<A>>> vals) {
+    private ArrayList<ArrayList<Ring<A>>> values;
+
+    public Matrix(List<List<Ring<A>>> vals) {
 
         rows = vals.size();
         cols = vals.get(0).size();
 
-        for(List<Field<A>> r: vals){
+        for(List<Ring<A>> r: vals){
             if(r.size() != cols){
                 throw new IllegalArgumentException("Invalid matrix");
             }
         }
         values = new ArrayList<>();
-        for (List<Field<A>> r : vals) {
-            ArrayList<Field<A>> row = new ArrayList<>(r);
+        for (List<Ring<A>> r : vals) {
+            ArrayList<Ring<A>> row = new ArrayList<>(r);
             values.add(row);
         }
     }
@@ -41,7 +41,7 @@ public class Matrix<A extends Field<A>> {
      */
     public Matrix(Supplier<A> ctr, String str) {
         this.ctor = ctr;
-        ArrayList<ArrayList<Field<A>>> matrixParam = new ArrayList<>();
+        ArrayList<ArrayList<Ring<A>>> matrixParam = new ArrayList<>();
         str = str.trim();
         int bracketCount = 0;
         Pattern rowPattern = Pattern.compile("\\[[a-zA-Z\\d\\s]*\\]");
@@ -55,14 +55,14 @@ public class Matrix<A extends Field<A>> {
          */
         int rowLength = -1;
         while(matcher.find()){
-            ArrayList<Field<A>> rowParam = new ArrayList<>();
+            ArrayList<Ring<A>> rowParam = new ArrayList<>();
             String row_str = matcher.group();
-            System.out.println(row_str);
+            //System.out.println(row_str);
             if(row_str.length() == 2) {
                 throw new IllegalArgumentException("Invalid Matrix String");
             }
             row_str = row_str.substring(1, row_str.length() - 1);
-            System.out.println(row_str);
+            //System.out.println(row_str);
             String [] row_input = row_str.split(" ");
             if(rowLength == -1){
                 rowLength = row_input.length;
@@ -78,14 +78,14 @@ public class Matrix<A extends Field<A>> {
         rows = matrixParam.size();
         cols = matrixParam.get(0).size();
 
-        for(List<Field<A>> r: matrixParam){
+        for(List<Ring<A>> r: matrixParam){
             if(r.size() != cols){
                 throw new IllegalArgumentException("Invalid matrix");
             }
         }
         values = new ArrayList<>();
-        for (List<Field<A>> r : matrixParam) {
-            ArrayList<Field<A>> row = new ArrayList<>(r);
+        for (List<Ring<A>> r : matrixParam) {
+            ArrayList<Ring<A>> row = new ArrayList<>(r);
             values.add(row);
         }
     }
@@ -102,7 +102,7 @@ public class Matrix<A extends Field<A>> {
         return rows + "x" + cols;
     }
 
-    public Field<A> get(int r, int c){
+    public Ring<A> get(int r, int c){
         return values.get(r).get(c);
     }
 
@@ -111,9 +111,9 @@ public class Matrix<A extends Field<A>> {
             throw new IllegalArgumentException("Cannot add matrices of size " + getDimensionString() +
                     " and " + other.getDimensionString());
         }
-        List<List<Field<A>>> vals = new ArrayList<>();
+        List<List<Ring<A>>> vals = new ArrayList<>();
         for(int i = 0; i < rows; i++){
-            List<Field<A>> val_row = new ArrayList<>();
+            List<Ring<A>> val_row = new ArrayList<>();
             for(int j = 0; j < cols; j++){
                 val_row.add(this.get(i, j).add(other.get(i, j).itself()));
             }
@@ -127,11 +127,11 @@ public class Matrix<A extends Field<A>> {
             throw new IllegalArgumentException("Cannot multiply matrices of size " + getDimensionString() +
                     " and " + other.getDimensionString());
         }
-        List<List<Field<A>>> vals = new ArrayList<>();
+        List<List<Ring<A>>> vals = new ArrayList<>();
         for(int i = 0; i < rows; i++){
-            List<Field<A>> val_row = new ArrayList<>();
+            List<Ring<A>> val_row = new ArrayList<>();
             for(int j = 0; j < other.cols; j++){
-                Field<A> val = ctor.get(); // just to initialize so Java won't complain
+                Ring<A> val = ctor.get(); // just to initialize so Java won't complain
                 for(int k = 0; k < this.cols; k++){
                     if(k == 0){
                         val = this.get(i, k).multiply(other.get(k, j).itself());
@@ -152,14 +152,13 @@ public class Matrix<A extends Field<A>> {
         for(int i = 0; i < rows; i++){
             result.append("[");
             for(int j = 0; j < cols; j++){
-                result.append("[");
                 result.append(get(i, j).toString());
                 if(j < cols - 1)
                     result.append("|");
-                result.append("]");
             }
             result.append("]");
         }
+        result.append("]");
         return result.toString();
     }
 
@@ -178,5 +177,11 @@ public class Matrix<A extends Field<A>> {
         System.out.println(new GF256("241"));
         Matrix<GF256> M1 = new Matrix<GF256>(GF256.getSupplier(), "[53 2 88 221][0 0 0 0]");
         Matrix<GF256> M2 = new Matrix<GF256>(GF256.getSupplier(), "[42 0][66 0][145 0][241 0]");
+        System.out.println(M1.multiply(M2));
+        System.out.println();
+        Matrix<IntRing> M3 = new Matrix<IntRing>(IntRing.getSupplier(), "[5 8 7][7 2 4][1 3 3]");
+        Matrix<IntRing> M4 = new Matrix<IntRing>(IntRing.getSupplier(), "[2 0 4][2 9 6][7 4 3]");
+        System.out.println(M3.multiply(M4));
+
     }
 }
