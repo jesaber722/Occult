@@ -178,4 +178,9 @@ public class GF256 extends Ring<GF256> {
         //System.out.println(output);
         return  output.substring(0, output.length() - 3);
     }
+
+    public static void main(String [] args){
+        System.out.println(new GF256("117").inverse());
+        System.out.println(new GF256("245").multiply(new GF256("70")));
+    }
 }
