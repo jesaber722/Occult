@@ -1,3 +1,5 @@
+import static AES.Math.AESLibrary.encrypt_128;
+
 public class DataArray {
 
     int [] data;
@@ -5,6 +7,41 @@ public class DataArray {
     final int array_size;
     final int size_in_bits;
     final int size_in_bytes;
+
+    public static DataArray encrypt_DataArray_OFB(DataArray plaintext, byte [] key, byte [] IV){
+        int decr_size = plaintext.size_in_bytes % 16 == 0? plaintext.size_in_bytes : plaintext.size_in_bytes + 16 - plaintext.size_in_bytes % 16;
+        DataArray ciphertext = new DataArray(decr_size);
+        byte [] stream = new byte[16];
+        System.arraycopy(IV, 0, stream, 0, 16);
+        for(int i = 0; i < decr_size; i += 16){
+            stream = encrypt_128(stream, key);
+            for(int j = 0; j < 16; j++){
+                if(i + j < plaintext.size_in_bytes){
+                    ciphertext.writeByte((byte)(stream[j] ^ plaintext.read_byte(i + j)), i + j);
+                } else {
+                    ciphertext.writeByte(stream[j], i + j);
+                }
+            }
+        }
+        return ciphertext;
+    }
+
+    public static DataArray decrypt_DataArray_OFB(DataArray ciphertext, byte [] key, byte [] IV, int size) {
+        DataArray plaintext = new DataArray(size);
+        byte [] stream = new byte[16];
+        System.arraycopy(IV, 0, stream, 0, 16);
+        for(int i = 0; i < ciphertext.size_in_bytes; i += 16){
+            stream = encrypt_128(stream, key);
+            for(int j = 0; j + i < size; j++){
+                plaintext.writeByte((byte)(stream[j] ^ ciphertext.read_byte(i + j)), i + j);
+            }
+        }
+        return plaintext;
+    }
+
+    public static DataArray encrypt_DataArray_CBC(DataArray plaintext, byte [] key, byte [] IV){
+        return null;
+    }
 
     public DataArray(String string) {
         bitsPer = 8;
@@ -17,13 +54,6 @@ public class DataArray {
             int n = (int) c;
             data[i] = n;
         }
-    }
-    public DataArray(int bitsPer, int size){
-        this.bitsPer = bitsPer;
-        this.array_size = size;
-        this.size_in_bits = size * bitsPer;
-        this.size_in_bytes = size * bitsPer / 8;
-        data = new int[size];
     }
 
     public DataArray(int numBytes){
@@ -139,5 +169,19 @@ public class DataArray {
         p = p & key;
         p = p | val;
         data[index] = p;
+    }
+
+    public static void main(String [] args){
+        DataArray plaintext = new DataArray("hello world");
+        for(int i = 0; i < plaintext.size_in_bytes; i++){
+            System.out.println(plaintext.read_byte(i));
+        }
+        System.out.println();
+        int size = plaintext.size_in_bytes;
+        DataArray ciphertext = DataArray.encrypt_DataArray_OFB(plaintext, new byte[16], new byte[16]);
+        DataArray plaintext_maybe = DataArray.decrypt_DataArray_OFB(ciphertext, new byte[16], new byte[16], size);
+        for(int i = 0; i < plaintext.size_in_bytes; i++){
+            System.out.println(plaintext_maybe.read_byte(i));
+        }
     }
 }

@@ -19,15 +19,15 @@ public class AESLibrary {
             "[0 0 0 1 1 1 1 1]"
     );
 
-    private final static Matrix<GF2> affineTransformMatrix = new Matrix<>(GF2.getSupplier(),
-            "[0 1 0 1 0 0 1 0]" +
-            "[0 0 1 0 1 0 0 1]" +
-            "[1 0 0 1 0 1 0 0]" +
-            "[0 1 0 0 1 0 1 0]" +
+    private final static Matrix<GF2> invAffineTransformMatrix = new Matrix<>(GF2.getSupplier(),
             "[0 0 1 0 0 1 0 1]" +
             "[1 0 0 1 0 0 1 0]" +
             "[0 1 0 0 1 0 0 1]" +
-            "[1 0 1 0 0 1 0 0]"
+            "[1 0 1 0 0 1 0 0]" +
+            "[0 1 0 1 0 0 1 0]" +
+            "[0 0 1 0 1 0 0 1]" +
+            "[1 0 0 1 0 1 0 0]" +
+            "[0 1 0 0 1 0 1 0]"
 
 
     );
@@ -43,11 +43,29 @@ public class AESLibrary {
             "[0]"
     );
 
+    private final static Matrix<GF2> invAffineTransVector = new Matrix<>(GF2.getSupplier(),
+            "[1]" +
+            "[0]" +
+            "[1]" +
+            "[0]" +
+            "[0]" +
+            "[0]" +
+            "[0]" +
+            "[0]"
+    );
+
     private final static Matrix<GF256> mixColumnMatrix = new Matrix<>(GF256.getSupplier(),
             "[2 3 1 1]" +
             "[1 2 3 1]" +
             "[1 1 2 3]" +
             "[3 1 1 2]"
+    );
+
+    private final static Matrix<GF256> invMixColumnMatrix = new Matrix<>(GF256.getSupplier(),
+            "[14 11 13 9]" +
+            "[9 14 11 13]" +
+            "[13 9 14 11]" +
+            "[11 13 9 14]"
     );
 
     private static byte gal_inv(byte n){
@@ -81,8 +99,37 @@ public class AESLibrary {
         return (byte)result;
     }
 
+    private static byte invAffineTransformation(byte n){
+        int n2 = n < 0? n + 256 : n;
+        List<List<Ring<GF2>>> vals = new ArrayList<>();
+        for(int i = 0; i < 8; i++){
+            List<Ring<GF2>> row = new ArrayList<>();
+            if(n2 % 2 == 1){
+                row.add(GF2.ONE);
+            } else {
+                row.add(GF2.ZERO);
+            }
+            vals.add(row);
+            n2 /= 2;
+        }
+        Matrix<GF2> inputVector = new Matrix<GF2>(vals);
+        Matrix<GF2> res = invAffineTransformMatrix.multiply(inputVector).add(invAffineTransVector);
+        //Matrix<GF2> res = invAffineTransformMatrix.multiply(affineTransVector.add(inputVector));
+        int result = 0;
+        int key = 1;
+        for(int i = 0; i < 8; i ++){
+            result += res.get(i, 0).itself().getValue() * key;
+            key *= 2;
+        }
+        return (byte)result;
+    }
+
     private static byte s(byte n){
         return affineTransformation(gal_inv(n));
+    }
+
+    private static byte inv_s(byte n){
+        return gal_inv(invAffineTransformation(n));
     }
 
     private static byte [] subBytes(final byte [] txt){
@@ -92,6 +139,17 @@ public class AESLibrary {
         byte [] ret = new byte[txt.length];
         for(int i = 0; i < txt.length; i++){
             ret[i] = s(txt[i]);
+        }
+        return ret;
+    }
+
+    private static byte [] invSubBytes(final byte [] txt){
+        if(txt.length != 16){
+            throw new IllegalArgumentException("Invalid block length");
+        }
+        byte [] ret = new byte[txt.length];
+        for(int i = 0; i < txt.length; i++){
+            ret[i] = inv_s(txt[i]);
         }
         return ret;
     }
@@ -120,6 +178,30 @@ public class AESLibrary {
         return ret;
     }
 
+    private final static byte [] invShiftRows(final byte [] txt){
+        if(txt.length != 16){
+            throw new IllegalArgumentException("Invalid block length");
+        }
+        byte [] ret = new byte[txt.length];
+        ret[0] = txt[0];
+        ret[1] = txt[13];
+        ret[2] = txt[10];
+        ret[3] = txt[7];
+        ret[4] = txt[4];
+        ret[5] = txt[1];
+        ret[6] = txt[14];
+        ret[7] = txt[11];
+        ret[8] = txt[8];
+        ret[9] = txt[5];
+        ret[10] = txt[2];
+        ret[11] = txt[15];
+        ret[12] = txt[12];
+        ret[13] = txt[9];
+        ret[14] = txt[6];
+        ret[15] = txt[3];
+        return ret;
+    }
+
     private static byte[] mixCol(final byte[] txt){
         byte [] ret = new byte[txt.length];
         List<List<Ring<GF256>>> inp = new ArrayList<>();
@@ -130,6 +212,22 @@ public class AESLibrary {
         }
         Matrix<GF256> inputVector = new Matrix<>(inp);
         Matrix<GF256> outputVector = mixColumnMatrix.multiply(inputVector);
+        for(int i = 0; i < ret.length; i++){
+            ret[i] = outputVector.get(i, 0).itself().getValue();
+        }
+        return ret;
+    }
+
+    private static byte[] invMixCol(final byte[] txt){
+        byte [] ret = new byte[txt.length];
+        List<List<Ring<GF256>>> inp = new ArrayList<>();
+        for(int i = 0; i < txt.length; i++){
+            List<Ring<GF256>> row = new ArrayList<>();
+            row.add(new GF256(txt[i]));
+            inp.add(row);
+        }
+        Matrix<GF256> inputVector = new Matrix<>(inp);
+        Matrix<GF256> outputVector = invMixColumnMatrix.multiply(inputVector);
         for(int i = 0; i < ret.length; i++){
             ret[i] = outputVector.get(i, 0).itself().getValue();
         }
@@ -147,6 +245,24 @@ public class AESLibrary {
                 tmp[j] = txt[4*i + j];
             }
             tmp = mixCol(tmp);
+            for(int j = 0; j < 4; j++){
+                ret[4*i + j] = tmp[j];
+            }
+        }
+        return ret;
+    }
+
+    private static byte [] invMixColumn(final byte [] txt){
+        if(txt.length != 16){
+            throw new IllegalArgumentException("Invalid block length");
+        }
+        byte [] ret = new byte[txt.length];
+        for(int i = 0; i < 4; i++){
+            byte [] tmp = new byte[4];
+            for(int j = 0; j < 4; j++){
+                tmp[j] = txt[4*i + j];
+            }
+            tmp = invMixCol(tmp);
             for(int j = 0; j < 4; j++){
                 ret[4*i + j] = tmp[j];
             }
@@ -178,9 +294,9 @@ public class AESLibrary {
         if(n.length != 4){
             throw new IllegalArgumentException("Invalid word length");
         }
-        System.out.println("g input byte: ");
-        hex_print(n);
-        System.out.println();
+        //System.out.println("g input byte: ");
+        //hex_print(n);
+        //System.out.println();
         byte [] ret = new byte[4];
         ret[0] = n[1];
         ret[1] = n[2];
@@ -189,14 +305,14 @@ public class AESLibrary {
         for(int i = 0; i < 4; i++){
             ret[i] = s(ret[i]);
         }
-        System.out.println("g middle byte: ");
-        hex_print(ret);
-        System.out.println();
-        System.out.println("round const: " + round_constant);
+        //System.out.println("g middle byte: ");
+        //hex_print(ret);
+        //System.out.println();
+        //System.out.println("round const: " + round_constant);
         ret[0] = (byte)(ret[0] ^ round_constant);
-        System.out.println("g output byte: ");
-        hex_print(ret);
-        System.out.println();
+        //System.out.println("g output byte: ");
+        //hex_print(ret);
+        //System.out.println();
         return ret;
     }
 
@@ -256,8 +372,8 @@ public class AESLibrary {
         byte[][] round_keys = generateSubkeys_128(key);
         //debug
         for(int i = 0; i < round_keys.length; i++){
-            hex_print(round_keys[i]);
-            System.out.println();
+            //hex_print(round_keys[i]);
+            //System.out.println();
         }
 
 
@@ -271,6 +387,43 @@ public class AESLibrary {
         ret = subBytes(ret);
         ret = shiftRows(ret);
         ret = addRoundKey(ret, round_keys[10]);
+
+        return ret;
+    }
+
+    public static byte[] decrypt_128(final byte [] block, byte [] key){
+        if(block.length != 16){
+            throw new IllegalArgumentException("Invalid block length");
+        }
+        if(key.length != 16){
+            throw new IllegalArgumentException("Invalid key length");
+        }
+
+        byte [] ret = new byte[16];
+        for(int i = 0; i < 16; i++){
+            ret[i] = block[i];
+        }
+
+        byte[][] round_keys = generateSubkeys_128(key);
+        //debug
+        for(int i = 0; i < round_keys.length; i++){
+            //hex_print(round_keys[i]);
+            //System.out.println();
+        }
+
+        ret = addRoundKey(ret, round_keys[10]);
+        ret = invShiftRows(ret);
+        ret = invSubBytes(ret);
+
+        for(int round = 9; round >= 1; round --){
+            ret = addRoundKey(ret, round_keys[round]);
+            ret = invMixColumn(ret);
+            ret = invShiftRows(ret);
+            ret = invSubBytes(ret);
+            ret = addRoundKey(ret, round_keys[0]);
+
+        }
+        //
 
         return ret;
     }
@@ -296,11 +449,17 @@ public class AESLibrary {
                 case '7': value += 7; break;
                 case '8': value += 8; break;
                 case '9': value += 9; break;
+                case 'a':
                 case 'A': value += 10; break;
+                case 'b':
                 case 'B': value += 11; break;
+                case 'c':
                 case 'C': value += 12; break;
+                case 'd':
                 case 'D': value += 13; break;
+                case 'e':
                 case 'E': value += 14; break;
+                case 'f':
                 case 'F': value += 15; break;
                 default: throw new IllegalArgumentException("Invalid hex string");
             }
@@ -317,7 +476,13 @@ public class AESLibrary {
     }
 
     public static void main(String[] args){
-        // why won't this fucking work
+        // s inv testing
+        hex_print(decrypt_128(encrypt_128(hexToByteArr("00000000000000000000000000000000"), hexToByteArr("00000000000000000000000000000000")), hexToByteArr("00000000000000000000000000000000")));
+
+        if(true){
+            return;
+        }
+        // why won't this ****ing work
         /*
         byte [] thing = hexToByteArr("54686174");
         byte [] thing2 = hexToByteArr("67204675");
@@ -347,7 +512,7 @@ public class AESLibrary {
         //System.out.println("s of 0x46 or 70: " + gal_inv((byte)70));
         hex_print(new byte[]{(byte) -11});
         System.out.println();
-        byte [] inp = hexToByteArr("00000000000000000000000000000000");
+        byte [] inp = hexToByteArr("6675636B000000000000000000000000");
         byte [] key = hexToByteArr("00000000000000000000000000000000");
         hex_print(inp);
         //System.out.println();
