@@ -259,6 +259,18 @@ public class DataArray {
         return ret;
     }
 
+    public boolean equals(DataArray other){
+        if(other.size_in_bytes != size_in_bytes){
+            return false;
+        }
+        for(int i = 0; i < size_in_bytes; i++){
+            if(read_byte(i) != other.read_byte(i)){
+                return false;
+            }
+        }
+        return true;
+    }
+
     public static void main(String [] args){
         DataArray plaintext = new DataArray("hello world");
         for(int i = 0; i < plaintext.size_in_bytes; i++){

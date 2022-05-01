@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.Calendar;
 import java.util.Scanner;
 
@@ -72,6 +73,10 @@ public class Occult {
                 }
             }
 
+            if(size > reader.getTrueSize() / 8){
+                System.out.println("Could not verify integrity of the data.");
+                return;
+            }
             //System.out.println(size);
             int encr_size = size % 16 == 0? size : size + 16 - size % 16;
             DataArray file_name_and_data = new DataArray(encr_size);
@@ -92,6 +97,29 @@ public class Occult {
             }
 
              */
+            if(!new DataArray(file_name_and_data.produce_MAC(key)).equals(MAC)){
+                System.out.println("Could not verify integrity of the data.");
+                return;
+            }
+            //System.out.println("We're in business.");
+            int split_index = 0;
+            while(file_name_and_data.read_byte(split_index) != (byte)0)
+                split_index++;
+            byte [] filename_data = new byte[split_index];
+            for(int i = 0; i < split_index; i++){
+                filename_data[i] = file_name_and_data.read_byte(i);
+            }
+            split_index ++;
+            byte [] file_data = new byte[file_name_and_data.size_in_bytes - split_index];
+            for(int i = 0; i < file_data.length; i++){
+                file_data[i] = file_name_and_data.read_byte(split_index + i);
+            }
+            if(out_name == null) {
+                out_name = new String(filename_data);
+            } else {
+                System.out.println("Original filename: " + new String(filename_data));
+            }
+            Files.write(Paths.get(out_name), file_data, StandardOpenOption.CREATE);
 
         } catch(IOException e){
             e.printStackTrace();
@@ -157,6 +185,12 @@ public class Occult {
             DataArray all_data = DataArray.combine_DataArrays(new DataArray[]{IV, MAC, size_data, file_name_and_data});
             BufferedImage img = ImageIO.read(new File(png_name));
             ImageRemapper remapper = new ImageRemapper(img);
+            System.out.println("Size of data to hide: " + all_data.size_in_bytes);
+            System.out.println("Capacity of " + png_name + ": " + (remapper.getTrueSize() / 8));
+            if((remapper.getTrueSize() / 8) < all_data.size_in_bytes){
+                System.out.println("Data does not fit into the picture.");
+                return;
+            }
             for(int i = 0; i < all_data.size_in_bits; i++){
                 remapper.write(all_data.read_bit(i), i);
             }

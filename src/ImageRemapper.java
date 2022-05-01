@@ -85,4 +85,8 @@ public class ImageRemapper {
                 return value != 0;
         }
     }
+
+    public long getTrueSize(){
+        return trueSize;
+    }
 }
