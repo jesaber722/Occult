@@ -32,7 +32,7 @@ public class ImageRemapper {
     }
 
     public void write(boolean bit, int location){
-        if(location > trueSize){
+        if(location >= trueSize){
             throw new IllegalArgumentException();
         }
         long fact_loc = Math.floorMod(location*factor, trueSize);
@@ -64,7 +64,7 @@ public class ImageRemapper {
     }
 
     public boolean read(int location){
-        if(location > trueSize){
+        if(location >= trueSize){
             throw new IllegalArgumentException();
         }
         long fact_loc = Math.floorMod(location*factor, trueSize);

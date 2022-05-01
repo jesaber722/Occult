@@ -346,7 +346,7 @@ public class AESLibrary {
         return ret;
     }
 
-    private static void hex_print(byte [] key){
+    public static void hex_print(byte [] key){
         for(int i = 0; i < key.length; i++){
             System.out.printf("%02X", key[i]);
         }

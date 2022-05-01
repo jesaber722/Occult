@@ -8,12 +8,28 @@ public class DataArray {
     final int size_in_bits;
     final int size_in_bytes;
 
+    public static DataArray combine_DataArrays(DataArray [] arrays){
+        int index = 0;
+        int size = 0;
+        for(DataArray d: arrays){
+            size += d.size_in_bytes;
+        }
+        DataArray ret = new DataArray(size);
+        for(DataArray d: arrays){
+            for(int j = 0; j < d.size_in_bytes; j++){
+                ret.writeByte(d.read_byte(j), index);
+                index ++;
+            }
+        }
+        return ret;
+    }
+
     public static DataArray encrypt_DataArray_OFB(DataArray plaintext, byte [] key, byte [] IV){
-        int decr_size = plaintext.size_in_bytes % 16 == 0? plaintext.size_in_bytes : plaintext.size_in_bytes + 16 - plaintext.size_in_bytes % 16;
-        DataArray ciphertext = new DataArray(decr_size);
+        int encr_size = plaintext.size_in_bytes % 16 == 0? plaintext.size_in_bytes : plaintext.size_in_bytes + 16 - plaintext.size_in_bytes % 16;
+        DataArray ciphertext = new DataArray(encr_size);
         byte [] stream = new byte[16];
-        System.arraycopy(IV, 0, stream, 0, 16);
-        for(int i = 0; i < decr_size; i += 16){
+        System.arraycopy(IV, 0, stream, 0, IV.length);
+        for(int i = 0; i < encr_size; i += 16){
             stream = encrypt_128(stream, key);
             for(int j = 0; j < 16; j++){
                 if(i + j < plaintext.size_in_bytes){
@@ -23,16 +39,32 @@ public class DataArray {
                 }
             }
         }
+        /*
+        for(int i = 0; i < ciphertext.size_in_bytes && ciphertext.size_in_bytes < 40; i++){
+            System.out.println(ciphertext.read_byte(i) + " cipher");
+        }
+         */
         return ciphertext;
     }
 
     public static DataArray decrypt_DataArray_OFB(DataArray ciphertext, byte [] key, byte [] IV, int size) {
+        if(IV.length > 16){
+            throw new IllegalArgumentException();
+        }
+        if(key.length != 16) {
+            throw new IllegalArgumentException();
+        }
         DataArray plaintext = new DataArray(size);
         byte [] stream = new byte[16];
-        System.arraycopy(IV, 0, stream, 0, 16);
+        System.arraycopy(IV, 0, stream, 0, IV.length);
+        /*
+        for(int i = 0; i < ciphertext.size_in_bytes; i++){
+            System.out.println(ciphertext.read_byte(i) + " cipher");
+        }
+         */
         for(int i = 0; i < ciphertext.size_in_bytes; i += 16){
             stream = encrypt_128(stream, key);
-            for(int j = 0; j + i < size; j++){
+            for(int j = 0; j < 16 && j + i < size; j++){
                 plaintext.writeByte((byte)(stream[j] ^ ciphertext.read_byte(i + j)), i + j);
             }
         }
@@ -63,6 +95,32 @@ public class DataArray {
         size_in_bits = size_in_bytes * 8;
         //System.out.println("arr_size "+array_size);
         data = new int[array_size];
+    }
+
+    public DataArray(byte [] input){
+        bitsPer = 32;
+        data = new int[(input.length + 3) / 4];
+        array_size = data.length;
+        size_in_bytes = input.length;
+        size_in_bits = input.length * 8;
+        for(int i = 0; i < input.length; i++){
+            writeByte(input[i], i);
+        }
+    }
+
+    public byte [] read_bytes(int location, int length){
+        byte [] ret = new byte[length];
+        for(int i = 0; i < length; i++){
+            ret[i] = read_byte(location + i);
+        }
+        return ret;
+    }
+
+    public void write_bytes(byte [] data, int location){
+        for(int i = 0; i < data.length; i++){
+            writeByte(data[i], location + i);
+        }
+        return;
     }
 
     public byte read_byte(int location){
@@ -169,6 +227,36 @@ public class DataArray {
         p = p & key;
         p = p | val;
         data[index] = p;
+    }
+
+    public byte [] produce_MAC(byte [] key){
+        if(key == null){
+            key = new byte[]{27, -110, -98, -8, -84, -61, 114, -9, -58, 127, 32, 1, 57, -77, 40, 55};
+        }
+        int s = size_in_bytes;
+        int a = 0;
+        byte [] MAC = new byte[16];
+        while(s > 0){
+            MAC[a] = (byte) (s % 256);
+            s /= 256;
+            a ++;
+        }
+        MAC = encrypt_128(key, MAC);
+        for(int i = 0; i < size_in_bytes; i += 16) {
+            for (int j = 0; j < 16 && j + i < size_in_bytes; j++) {
+                MAC[j] = (byte)(MAC[j] ^ read_byte(i + j));
+            }
+            MAC = encrypt_128(key, MAC);
+        }
+        return MAC;
+    }
+
+    public byte [] toByteArray(){
+        byte [] ret = new byte[size_in_bytes];
+        for(int i = 0; i < size_in_bytes; i++){
+            ret[i] = read_byte(i);
+        }
+        return ret;
     }
 
     public static void main(String [] args){
