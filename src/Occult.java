@@ -43,11 +43,6 @@ public class Occult {
             for(int i = 0; i < 8 *  NUM_IV_BYTES; i++){
                 IV.write_bit(reader.read(i), i);
             }
-            /*
-            for(int i = 0; i < IV.size_in_bytes; i++){
-                System.out.println(IV.read_byte(i));
-            }
-             */
             for(int i = 0; i < 8 * NUM_MAC_BYTES; i++){
                 MAC.write_bit(reader.read(i + 8 * NUM_IV_BYTES), i);
             }
@@ -56,11 +51,6 @@ public class Occult {
                 size_data.write_bit(reader.read(i + 8 * (NUM_IV_BYTES + NUM_MAC_BYTES)), i);
             }
             size_data = DataArray.decrypt_DataArray_OFB(size_data, key, IV.toByteArray(), TRUE_NUM_SIZE_BYTES);
-            /*
-            for(int i = 0; i < size_data.size_in_bytes; i++){
-                System.out.println(size_data.read_byte(i) + "size_data_decr");
-            }
-             */
             int size = 0;
             for(int i = size_data.size_in_bytes - 1; i >= 0; i--){
                 int n = size_data.read_byte(i);
@@ -83,20 +73,7 @@ public class Occult {
             for(int i = 0; i < 8 * encr_size; i++){
                 file_name_and_data.write_bit(reader.read(i + 8 * (NUM_IV_BYTES + NUM_MAC_BYTES + NUM_SIZE_BYTES)), i);
             }
-            /*
-            for(int i = 0; i < 10; i++){
-                System.out.println("en"+file_name_and_data.read_byte(i));
-            }
-            System.out.println("size "+size);
-
-             */
             file_name_and_data = DataArray.decrypt_DataArray_OFB(file_name_and_data, key, IV.toByteArray(), size);
-            /*
-            for(int i = 0; i < 10; i++){
-                System.out.println(file_name_and_data.read_byte(i));
-            }
-
-             */
             if(!new DataArray(file_name_and_data.produce_MAC(key)).equals(MAC)){
                 System.out.println("Could not verify integrity of the data.");
                 return;
@@ -162,26 +139,10 @@ public class Occult {
                 orig_size = orig_size >>> 8;
             }
             DataArray MAC = new DataArray(file_name_and_data.produce_MAC(key));
-            /*
-            for(int i = 0; i < size_data.size_in_bytes; i++){
-                System.out.println(size_data.read_byte(i) + " size_data_decr");
-            }
-
-            for(int i = 0; i < 10; i++){
-                System.out.println(file_name_and_data.read_byte(i));
-            }
-
-             */
             if(key != null) {
                 size_data = DataArray.encrypt_DataArray_OFB(size_data, key, IV.toByteArray());
                 file_name_and_data = DataArray.encrypt_DataArray_OFB(file_name_and_data, key, IV.toByteArray());
             }
-            /*
-            for(int i = 0; i < 10; i++){
-                System.out.println("en"+file_name_and_data.read_byte(i));
-            }
-
-             */
             DataArray all_data = DataArray.combine_DataArrays(new DataArray[]{IV, MAC, size_data, file_name_and_data});
             BufferedImage img = ImageIO.read(new File(png_name));
             ImageRemapper remapper = new ImageRemapper(img);
@@ -210,24 +171,6 @@ public class Occult {
     }
 
     public static void main(String [] args) {
-        /*
-        hex_print(produce_key("this is a terrible password"));
-        System.out.println();
-        hex_print(produce_key("thes is a terrible password"));
-        System.out.println();
-        hex_print(produce_key("this is a terrible paspword"));
-        System.out.println();
-        hex_print(produce_key("this is a terribl password"));
-        System.out.println();
-        hex_print(produce_key("this is a terrible demonstrative pronoun"));
-        System.out.println();
-        hex_print(produce_key("this is a terrible password"));
-        System.out.println();
-        if(true)
-            return;
-
-        /// END DEBUG
-         */
         String mode = null;
         String raw = null;
         String IV = null;
