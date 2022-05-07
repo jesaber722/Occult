@@ -271,6 +271,7 @@ public class DataArray {
         return true;
     }
 
+    /*
     public static void main(String [] args){
         DataArray plaintext = new DataArray("hello world");
         for(int i = 0; i < plaintext.size_in_bytes; i++){
@@ -284,4 +285,6 @@ public class DataArray {
             System.out.println(plaintext_maybe.read_byte(i));
         }
     }
+
+     */
 }

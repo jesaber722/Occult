@@ -63,7 +63,7 @@ public class Occult {
                 }
             }
 
-            if(size > reader.getTrueSize() / 8){
+            if(size > reader.getTrueSize() / 8 || size < 0){
                 System.out.println("Could not verify integrity of the data.");
                 return;
             }

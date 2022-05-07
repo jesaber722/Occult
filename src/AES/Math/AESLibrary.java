@@ -124,8 +124,23 @@ public class AESLibrary {
         return (byte)result;
     }
 
+    private static boolean s_lookup_initialized = false;
+
+    private static byte [] s_lookup = new byte[256];
+
     private static byte s(byte n){
-        return affineTransformation(gal_inv(n));
+
+
+        if(!s_lookup_initialized){
+            for(int i = 0; i < 256; i++){
+                s_lookup[i] = affineTransformation(gal_inv((byte)i));
+            }
+            s_lookup_initialized = true;
+        }
+
+
+        return s_lookup[n < 0? n + 256 : n];
+        //return affineTransformation(gal_inv(n));
     }
 
     private static byte inv_s(byte n){
