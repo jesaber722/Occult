@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="685f0602-3207-433b-ba73-2c3e983036dd" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/AES/Math/AESLibrary.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/AES/Math/Matrix.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/AES/Math/Vector.java" afterDir="false" />
+    <list default="true" id="685f0602-3207-433b-ba73-2c3e983036dd" name="Default Changelist" comment="worked on whole program">
+      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Steg/AES/Math/Field.class" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/Steg/AES/Math/GF256.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Steg/AES/Math/GF256.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Steg/AES/Math/Test.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Steg/AES/Math/Test.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/AES/Math/Field.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AES/Math/Field.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/AES/Math/GF256.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AES/Math/GF256.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/AES/Math/Test.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AES/Math/Test.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Steg/DataArray.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Steg/DataArray.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Steg/FindMessage.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Steg/HideMessage.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Steg/ImageRemapper.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Steg/ImageRemapper.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/steganography.txt" beforeDir="false" afterPath="$PROJECT_DIR$/steganography.txt" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -49,18 +49,36 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Application.Matrix">
-    <configuration name="FindMessage" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="FindMessage" />
+  <component name="RunManager" selected="Application.Occult">
+    <configuration name="AESLibrary" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="AES.Math.AESLibrary" />
+      <module name="Steg" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="AES.Math.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="DataArray" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="DataArray" />
       <module name="Steg" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="HideMessage" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="HideMessage" />
+    <configuration name="GF256" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="AES.Math.GF256" />
       <module name="Steg" />
-      <option name="PROGRAM_PARAMETERS" value="desktop.png diploma.jpg hidden_steganography.png" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="AES.Math.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -78,46 +96,27 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Test" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="AES.Math.Test" />
+    <configuration name="Occult" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="Occult" />
       <module name="Steg" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="AES.Math.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="testUtil" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="test.testUtil" />
-      <module name="Steg" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="test.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
     <list>
-      <item itemvalue="Application.FindMessage" />
-      <item itemvalue="Application.HideMessage" />
-      <item itemvalue="Application.testUtil" />
-      <item itemvalue="Application.Test" />
       <item itemvalue="Application.Matrix" />
+      <item itemvalue="Application.AESLibrary" />
+      <item itemvalue="Application.GF256" />
+      <item itemvalue="Application.DataArray" />
+      <item itemvalue="Application.Occult" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.Occult" />
+        <item itemvalue="Application.DataArray" />
+        <item itemvalue="Application.AESLibrary" />
+        <item itemvalue="Application.GF256" />
         <item itemvalue="Application.Matrix" />
-        <item itemvalue="Application.FindMessage" />
-        <item itemvalue="Application.Test" />
-        <item itemvalue="Application.HideMessage" />
-        <item itemvalue="Application.testUtil" />
       </list>
     </recent_temporary>
   </component>
@@ -132,6 +131,77 @@
       <option name="presentableId" value="Default" />
       <updated>1640808761602</updated>
     </task>
+    <task id="LOCAL-00001" summary="worked on matrix">
+      <created>1645064255475</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1645064255475</updated>
+    </task>
+    <task id="LOCAL-00002" summary="added matrix multiplication and printing without testing yet">
+      <created>1650129294867</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1650129294867</updated>
+    </task>
+    <task id="LOCAL-00003" summary="byte substitution seems to be working">
+      <created>1650138398289</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1650138398289</updated>
+    </task>
+    <task id="LOCAL-00004" summary="worked on mixColumn">
+      <created>1650139849549</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1650139849549</updated>
+    </task>
+    <task id="LOCAL-00005" summary="aes128 seems to work, need decryption still">
+      <created>1650746662643</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1650746662643</updated>
+    </task>
+    <task id="LOCAL-00006" summary="worked on whole program">
+      <created>1651342097874</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1651342097874</updated>
+    </task>
+    <task id="LOCAL-00007" summary="worked more on implementation">
+      <created>1651443971431</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1651443971431</updated>
+    </task>
+    <task id="LOCAL-00008" summary="it is working. What have I done">
+      <created>1651445950238</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1651445950238</updated>
+    </task>
+    <task id="LOCAL-00009" summary="im happy">
+      <created>1651451625177</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1651451625177</updated>
+    </task>
+    <task id="LOCAL-00010" summary="optimized AES a bit better">
+      <created>1651939709455</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1651939709455</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -139,10 +209,25 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
           </value>
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="worked on matrix" />
+    <MESSAGE value="byte substitution seems to be working" />
+    <MESSAGE value="worked on mixColumn" />
+    <MESSAGE value="added matrix multiplication and printing without testing yet" />
+    <MESSAGE value="aes128 seems to work, need decryption still" />
+    <MESSAGE value="worked on whole program" />
+    <MESSAGE value="worked more on implementation" />
+    <MESSAGE value="it is working. What have I done" />
+    <MESSAGE value="im happy" />
+    <MESSAGE value="optimized AES a bit better" />
+    <option name="LAST_COMMIT_MESSAGE" value="optimized AES a bit better" />
   </component>
 </project>
