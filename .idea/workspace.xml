@@ -2,15 +2,26 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="685f0602-3207-433b-ba73-2c3e983036dd" name="Default Changelist" comment="worked on whole program">
-      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Steg/AES/Math/Field.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Steg/AES/Math/GF256.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Steg/AES/Math/GF256.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Steg/DataArray.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Steg/DataArray.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Steg/FindMessage.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Steg/HideMessage.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Steg/ImageRemapper.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Steg/ImageRemapper.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/steganography.txt" beforeDir="false" afterPath="$PROJECT_DIR$/steganography.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Steg.iml" beforeDir="false" afterPath="$PROJECT_DIR$/Occult.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Steg/AES/Math/AESLibrary.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Steg/AES/Math/GF2$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Steg/AES/Math/GF2.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Steg/AES/Math/GF256$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Steg/AES/Math/GF256.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Steg/AES/Math/IntRing$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Steg/AES/Math/IntRing.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Steg/AES/Math/Matrix.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Steg/AES/Math/Ring.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Steg/AES/Math/Test.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Steg/AES/Math/Vector.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Steg/DataArray.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Steg/ImageRemapper.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Steg/Occult.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Steg/PhotoUtil/ColorArray.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Steg/PhotoUtil/EffectLibrary.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Steg/test/testUtil.class" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -32,10 +43,16 @@
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="PropertiesComponent">
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="project.structure.last.edited" value="SDKs" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
     <property name="settings.editor.selected.configurable" value="configurable.group.build" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\jesab\Desktop\AnalysisOfFolders\Steg\PNGS" />
+    </key>
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -52,7 +69,7 @@
   <component name="RunManager" selected="Application.Occult">
     <configuration name="AESLibrary" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="AES.Math.AESLibrary" />
-      <module name="Steg" />
+      <module name="Occult" />
       <extension name="coverage">
         <pattern>
           <option name="PATTERN" value="AES.Math.*" />
@@ -65,14 +82,14 @@
     </configuration>
     <configuration name="DataArray" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="DataArray" />
-      <module name="Steg" />
+      <module name="Occult" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
     <configuration name="GF256" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="AES.Math.GF256" />
-      <module name="Steg" />
+      <module name="Occult" />
       <extension name="coverage">
         <pattern>
           <option name="PATTERN" value="AES.Math.*" />
@@ -85,7 +102,7 @@
     </configuration>
     <configuration name="Matrix" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="AES.Math.Matrix" />
-      <module name="Steg" />
+      <module name="Occult" />
       <extension name="coverage">
         <pattern>
           <option name="PATTERN" value="AES.Math.*" />
@@ -98,7 +115,7 @@
     </configuration>
     <configuration name="Occult" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="Occult" />
-      <module name="Steg" />
+      <module name="Occult" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
