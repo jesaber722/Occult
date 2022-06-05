@@ -1,7 +1,12 @@
 /**
  * Functional interface for operations performed during AES encryption and decryption.
  */
-package AES.Math;
+package AES;
+
+import AES.Math.GF2;
+import AES.Math.GF256;
+import AES.Math.Matrix;
+import AES.Math.Ring;
 
 import java.util.ArrayList;
 import java.util.List;

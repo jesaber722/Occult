@@ -8,7 +8,7 @@ import java.nio.file.StandardOpenOption;
 import java.util.Calendar;
 import java.util.Scanner;
 
-import static AES.Math.AESLibrary.encrypt_128;
+import static AES.AESLibrary.encrypt_128;
 
 public class Occult {
 
@@ -16,26 +16,27 @@ public class Occult {
     private static final int TRUE_NUM_SIZE_BYTES = 4;
     private static final int NUM_SIZE_BYTES = 16;
     private static final int NUM_MAC_BYTES = 16;
+    public static final byte [] DUMMY = {27, -110, -98, -8, -84, -61, 114, -9, -58, 127, 32, 1, 57, -77, 40, 55};
 
     private static byte [] produce_key(String password) {
         byte[] buf = new byte[16];
-        byte[] dummy = {27, -110, -98, -8, -84, -61, 114, -9, -58, 127, 32, 1, 57, -77, 40, 55};
+        //byte[] dummy = {27, -110, -98, -8, -84, -61, 114, -9, -58, 127, 32, 1, 57, -77, 40, 55};
         // randomly chosen ^^^
         for (int i = 0; i < password.length(); i += 16) {
             //System.out.println(i + "");
             for (int j = 0; j < 16 && i + j < password.length(); j++) {
                 buf[j] = (byte)(buf[j] ^ password.charAt(i + j));
             }
-            buf = encrypt_128(dummy, buf);
+            buf = encrypt_128(DUMMY, buf);
         }
-        buf = encrypt_128(dummy, buf);
+        buf = encrypt_128(DUMMY, buf);
         return buf;
     }
 
     private static void reveal(String png_name, String out_name, byte [] key){
         try{
             BufferedImage img = ImageIO.read(new File(png_name));
-            ImageRemapper reader = new ImageRemapper(img);
+            SimpleRemapper reader = new SimpleRemapper(img);
             DataArray IV = new DataArray(NUM_IV_BYTES);
             DataArray MAC = new DataArray(NUM_MAC_BYTES);
             DataArray size_data = new DataArray(NUM_SIZE_BYTES);
@@ -145,7 +146,7 @@ public class Occult {
             }
             DataArray all_data = DataArray.combine_DataArrays(new DataArray[]{IV, MAC, size_data, file_name_and_data});
             BufferedImage img = ImageIO.read(new File(png_name));
-            ImageRemapper remapper = new ImageRemapper(img);
+            SimpleRemapper remapper = new SimpleRemapper(img);
             System.out.println("Size of data to hide: " + all_data.size_in_bytes);
             System.out.println("Capacity of " + png_name + ": " + (remapper.getTrueSize() / 8));
             if((remapper.getTrueSize() / 8) < all_data.size_in_bytes){

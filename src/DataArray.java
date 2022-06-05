@@ -1,4 +1,4 @@
-import static AES.Math.AESLibrary.encrypt_128;
+import static AES.AESLibrary.encrypt_128;
 
 public class DataArray {
 
