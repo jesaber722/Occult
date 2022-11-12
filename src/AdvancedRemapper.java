@@ -27,9 +27,9 @@ public class AdvancedRemapper implements ImageRemapper{
             throw new RuntimeException("Cannot create");
         }
         trueSize = (int) tSize;
-        System.out.println("trueSize: " + trueSize);
+        //System.out.println("trueSize: " + trueSize);
         locationValues = new int[trueSize];
-        System.out.println("seeding ... ");
+        System.out.print("Seeding RNG ...");
         AES128Generator rng = new AES128Generator();
         rng.seed(key);
         byte [] seed = new byte[16];
@@ -52,7 +52,8 @@ public class AdvancedRemapper implements ImageRemapper{
             }
             rng.seed(seed);
         }
-        System.out.println("done seeding.");
+        System.out.println(" done.");
+        System.out.println("Calculating remapping ...");
         int remaining_size = trueSize;
         int [] remaining = new int[trueSize];
         for(int i = 0; i < trueSize; i++){
@@ -61,8 +62,8 @@ public class AdvancedRemapper implements ImageRemapper{
         while(remaining_size > 0){
             //System.out.println("remaining_size: "+remaining_size);
             long l = rng.nextSemiLong();
-            if(remaining_size % 1000 == 0){
-                System.out.println("current remaining_size: " + remaining_size);
+            if(remaining_size % 1000000 == 0){
+                System.out.println("Current remaining size: " + remaining_size);
             }
             if(l < 0){
                 l = -1 * l;

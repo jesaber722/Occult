@@ -36,7 +36,7 @@ public class Occult {
     private static void reveal(String png_name, String out_name, byte [] key){
         try{
             BufferedImage img = ImageIO.read(new File(png_name));
-            SimpleRemapper reader = new SimpleRemapper(img);
+            ImageRemapper reader = new AdvancedRemapper(img, key);
             DataArray IV = new DataArray(NUM_IV_BYTES);
             DataArray MAC = new DataArray(NUM_MAC_BYTES);
             DataArray size_data = new DataArray(NUM_SIZE_BYTES);
@@ -146,7 +146,7 @@ public class Occult {
             }
             DataArray all_data = DataArray.combine_DataArrays(new DataArray[]{IV, MAC, size_data, file_name_and_data});
             BufferedImage img = ImageIO.read(new File(png_name));
-            SimpleRemapper remapper = new SimpleRemapper(img);
+            ImageRemapper remapper = new AdvancedRemapper(img, key);
             System.out.println("Size of data to hide: " + all_data.size_in_bytes);
             System.out.println("Capacity of " + png_name + ": " + (remapper.getTrueSize() / 8));
             if((remapper.getTrueSize() / 8) < all_data.size_in_bytes){

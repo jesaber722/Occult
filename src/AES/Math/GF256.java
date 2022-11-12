@@ -4,6 +4,8 @@ import java.util.function.Supplier;
 
 public class GF256 extends Ring<GF256> {
 
+    private static int mul_count = 0;
+
     private static final int AES_POLYNOMIAL = 283;
     //x^8 + x^4 + x^3 + x + 1
     private static boolean inverse_table_initialized = false;
@@ -56,6 +58,8 @@ public class GF256 extends Ring<GF256> {
     }
 
     public GF256 multiply( GF256 b) {
+        mul_count++;
+        //System.out.println("Galois multiplication: " + mul_count);
         int c = value;
         if(c < 0){
             c += 256;
