@@ -8,9 +8,13 @@ The most recent addition I made was to improve the way in which files are hidden
 command line arguments:
 Occult picture.png [--hide file] [--out file] [--raw] [--simple]
 picture.png: the png in which to hide/reveal a file. The program will default to revealing unless a file to hide was given wiht the [--hide file] argument.
+
 [--hide file]: Specify the file to hide in the png.
+
 [--out file]: Optionally specify an output file name when revealing a file. If specified, the program will print the original file name, but write to the specified file name.
+
 [--raw]: If specified, skip encrypting entirely and just hide the file. Always uses the simple remapping scheme.
+
 [--simple]: If specified, use the simple, much faster, but much less secure remapping scheme.
 
 Future features to add to this program include AES256 and allowing the user to choose between more secure but slower mappings versus less secure but fast mappings.
