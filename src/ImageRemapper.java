@@ -1,7 +1,8 @@
 
 /**
  * image remappers read/write a bit at a certain location in the image. This location is
- * determined by the remapping being used.
+ * determined by the remapping being used. Ideally, it should hide things in a "random" fashion,
+ * so it is hard to tell if a png contains a hidden message.
  */
 public interface ImageRemapper {
 
