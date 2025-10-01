@@ -271,4 +271,13 @@ public class DataArray {
         return true;
     }
 
+    public String toString(){
+        byte [] arr = toByteArray();
+        String str = "";
+        for (byte b: arr){
+            str += b + ", ";
+        }
+        return str;
+    }
+
 }

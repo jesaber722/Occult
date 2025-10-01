@@ -17,6 +17,13 @@ public class Occult {
     private static final int NUM_MAC_BYTES = 16;
     public static final byte [] DUMMY = {27, -110, -98, -8, -84, -61, 114, -9, -58, 127, 32, 1, 57, -77, 40, 55};
 
+    private static BufferedImage toRGB24(BufferedImage src) {
+        if (src.getType() == BufferedImage.TYPE_INT_RGB) return src;
+        BufferedImage better = new BufferedImage(src.getWidth(), src.getHeight(), BufferedImage.TYPE_INT_RGB);
+        better.getGraphics().drawImage(src, 0, 0, null);
+        return better;
+    }
+
     private static byte [] produce_key(String password) {
         byte[] buf = new byte[16];
         //byte[] dummy = {27, -110, -98, -8, -84, -61, 114, -9, -58, 127, 32, 1, 57, -77, 40, 55};
@@ -42,6 +49,7 @@ public class Occult {
     private static void reveal(String png_name, String out_name, byte [] key, boolean simple){
         try{
             BufferedImage img = ImageIO.read(new File(png_name));
+            img = toRGB24(img);
             ImageRemapper reader = simple? new SimpleRemapper(img) : new AdvancedRemapper(img, key);
             DataArray IV = new DataArray(NUM_IV_BYTES);
             DataArray MAC = new DataArray(NUM_MAC_BYTES);
@@ -71,6 +79,7 @@ public class Occult {
             }
 
             if(size > reader.getTrueSize() / 8 || size < 0){
+                //System.out.println("size wrong");
                 System.out.println("Could not verify integrity of the data.");
                 return;
             }
@@ -160,6 +169,7 @@ public class Occult {
             }
             DataArray all_data = DataArray.combine_DataArrays(new DataArray[]{IV, MAC, size_data, file_name_and_data});
             BufferedImage img = ImageIO.read(new File(png_name));
+            img = toRGB24(img);
             ImageRemapper remapper = simple? new SimpleRemapper(img) : new AdvancedRemapper(img, key);
             System.out.println("Size of data to hide: " + all_data.size_in_bytes);
             System.out.println("Capacity of " + png_name + ": " + (remapper.getTrueSize() / 8));
@@ -276,7 +286,7 @@ public class Occult {
         }
 
         boolean use_simple = false;
-        if(simple.equals("y")){
+        if(simple != null && simple.equals("y")){
             use_simple = true;
         }
 
