@@ -1,3 +1,8 @@
+
+/**
+ * image remappers read/write a bit at a certain location in the image. This location is
+ * determined by the remapping being used.
+ */
 public interface ImageRemapper {
 
     /**
