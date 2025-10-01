@@ -6,7 +6,9 @@ This program allows you to encrypt and hide files in PNG files by storing them i
 The most recent addition I made was to improve the way in which files are hidden so that it should be much harder to determine whether a particular PNG is hiding a file or not. One major limitation is that hiding a larger file tends to increase the file size of the PNG which could cause suspicion.
 
 command line arguments:
+
 Occult picture.png [--hide file] [--out file] [--raw] [--simple]
+
 picture.png: the png in which to hide/reveal a file. The program will default to revealing unless a file to hide was given wiht the [--hide file] argument.
 
 [--hide file]: Specify the file to hide in the png.
