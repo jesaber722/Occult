@@ -1,5 +1,8 @@
 package AES.Math;
 
+/**
+ * abstract classs representing a field
+ */
 public abstract class Ring<A extends Ring<A>> {
 
     public static GF256 ZERO_GF256 = new GF256((byte)0);

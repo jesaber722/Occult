@@ -2,6 +2,9 @@ package AES.Math;
 
 import java.util.function.Supplier;
 
+/**
+ * implementation of the Galois field of order 256.
+ */
 public class GF256 extends Ring<GF256> {
 
     private static int mul_count = 0;

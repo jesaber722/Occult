@@ -1,5 +1,9 @@
 import static AES.AESLibrary.encrypt_128;
 
+/**
+ * DataArray stores data and allows for easy bitwise/bytewise manipulation, along with
+ * easily supporting encryption/decryption.
+ */
 public class DataArray {
 
     int [] data;
@@ -24,6 +28,12 @@ public class DataArray {
         return ret;
     }
 
+    /**
+     * encrypt a DataArray in OFB mode, returning a new one.
+     * plaintext: the original data
+     * key: the AES key used for encryption
+     * IV: initialization vector for randomization
+     */
     public static DataArray encrypt_DataArray_OFB(DataArray plaintext, byte [] key, byte [] IV){
         int encr_size = plaintext.size_in_bytes % 16 == 0? plaintext.size_in_bytes : plaintext.size_in_bytes + 16 - plaintext.size_in_bytes % 16;
         DataArray ciphertext = new DataArray(encr_size);
@@ -47,6 +57,13 @@ public class DataArray {
         return ciphertext;
     }
 
+    /**
+     * decrypt a DataArray in OFB mode, returning a new one.
+     * ciphertext: the encrypted data
+     * key: the AES key used for encryption
+     * IV: initialization vector for randomization
+     * size: the size of the original plaintext
+     */
     public static DataArray decrypt_DataArray_OFB(DataArray ciphertext, byte [] key, byte [] IV, int size) {
         if(IV.length > 16){
             throw new IllegalArgumentException();
@@ -271,6 +288,9 @@ public class DataArray {
         return true;
     }
 
+    /**
+     * Print DataArray as array of bytes
+     */
     public String toString(){
         byte [] arr = toByteArray();
         String str = "";

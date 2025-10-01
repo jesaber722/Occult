@@ -2,6 +2,9 @@ package AES.Math;
 
 import java.util.function.Supplier;
 
+/**
+ * implementation of the field of order two.
+ */
 public class GF2 extends Ring<GF2> {
 
     public final static GF2 ZERO = new GF2(0);
