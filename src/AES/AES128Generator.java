@@ -1,6 +1,9 @@
 
 package AES;
 
+/**
+ * Pseudorandom number generator based on AES128.
+ */
 public class AES128Generator {
 
     public static final byte [] DUMMY = {27, -110, -98, -8, -84, -61, 114, -9, -59, 127, 32, 1, 57, -77, 40, 55};

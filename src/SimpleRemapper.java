@@ -2,6 +2,12 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.math.BigInteger;
 
+/**
+ * The simple remapper maps the data into the image in a simple manner, offsetting a regular
+ * amount of width/height/color each time with each bit. This is much faster than the
+ * advanced remapper. Unfortunately, this also makes the locations predictable for someone
+ * intercepting the image to look for anomolous patterns.
+ */
 public class SimpleRemapper implements ImageRemapper{
 
     private static final double PHI = (Math.sqrt(5.0) + 1.0) / 2.0;

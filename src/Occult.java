@@ -1,4 +1,4 @@
-import javax.imageio.ImageIO;
+import static AES.AESLibrary.encrypt_128;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -7,8 +7,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.Calendar;
 import java.util.Scanner;
-
-import static AES.AESLibrary.encrypt_128;
+import javax.imageio.ImageIO;
 
 public class Occult {
 
@@ -33,10 +32,17 @@ public class Occult {
         return buf;
     }
 
-    private static void reveal(String png_name, String out_name, byte [] key){
+    /**
+     * Reveal a hidden message in the form of a file in an image.
+     * png_name: the image in which to look for the hidden data.
+     * out_name: what to name the output file (defaults to original name).
+     * key: the AES key to use when decrypting.
+     * simple: use the simple remapper if true, else use the advanced
+     */
+    private static void reveal(String png_name, String out_name, byte [] key, boolean simple){
         try{
             BufferedImage img = ImageIO.read(new File(png_name));
-            ImageRemapper reader = new AdvancedRemapper(img, key);
+            ImageRemapper reader = simple? new SimpleRemapper(img) : new AdvancedRemapper(img, key);
             DataArray IV = new DataArray(NUM_IV_BYTES);
             DataArray MAC = new DataArray(NUM_MAC_BYTES);
             DataArray size_data = new DataArray(NUM_SIZE_BYTES);
@@ -105,7 +111,15 @@ public class Occult {
         return;
     }
 
-    private static void hide(String png_name, String hide_name, String out_name, byte [] key){
+    /**
+     * Hide a file in a png image.
+     * png_name: the png in which to hide an image
+     * hide_name: the file to hide in the png
+     * out_name: the name of the png that will be produced, containing the hidden message.
+     * key: the AES key to use when encrypting
+     * simple: if yes, use the simple remapper, otherwise use the advanced
+     */
+    private static void hide(String png_name, String hide_name, String out_name, byte [] key, boolean simple){
         try {
             // read the file data
             DataArray file_name_and_data;
@@ -146,7 +160,7 @@ public class Occult {
             }
             DataArray all_data = DataArray.combine_DataArrays(new DataArray[]{IV, MAC, size_data, file_name_and_data});
             BufferedImage img = ImageIO.read(new File(png_name));
-            ImageRemapper remapper = new AdvancedRemapper(img, key);
+            ImageRemapper remapper = simple? new SimpleRemapper(img) : new AdvancedRemapper(img, key);
             System.out.println("Size of data to hide: " + all_data.size_in_bytes);
             System.out.println("Capacity of " + png_name + ": " + (remapper.getTrueSize() / 8));
             if((remapper.getTrueSize() / 8) < all_data.size_in_bytes){
@@ -168,7 +182,7 @@ public class Occult {
     }
 
     private static void usage(){
-        System.out.println("Occult picture.png [--hide file] [--out file] [--raw]");
+        System.out.println("Occult picture.png [--hide file] [--out file] [--raw] [--simple]");
     }
 
     public static void main(String [] args) {
@@ -178,11 +192,18 @@ public class Occult {
         String hide_name = null;
         String out_name = null;
         String png_name = null;
+        String simple = null;
 
         String previous = null;
         for(String arg : args){
             if(previous == null){
-                if(arg.equals("--raw")){
+                if(arg.equals("--simple")){
+                    if(simple != null){
+                        usage();
+                        return;
+                    }
+                    simple = "y";
+                } else if(arg.equals("--raw")){
                     if(raw != null){
                         usage();
                         return;
@@ -240,7 +261,6 @@ public class Occult {
             return;
         }
 
-        //System.out.println("Good...");
         Scanner sc = new Scanner(System.in);
         String password = null;
         byte [] key = null;
@@ -255,12 +275,17 @@ public class Occult {
             password = null;
         }
 
+        boolean use_simple = false;
+        if(simple.equals("y")){
+            use_simple = true;
+        }
+
         if(hide_name != null){
             // We're going to hide a file
-            hide(png_name, hide_name, out_name, key);
+            hide(png_name, hide_name, out_name, key, use_simple);
         } else {
             // We're going to reveal a file
-            reveal(png_name, out_name, key);
+            reveal(png_name, out_name, key, use_simple);
         }
         return;
     }

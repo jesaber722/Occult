@@ -271,20 +271,4 @@ public class DataArray {
         return true;
     }
 
-    /*
-    public static void main(String [] args){
-        DataArray plaintext = new DataArray("hello world");
-        for(int i = 0; i < plaintext.size_in_bytes; i++){
-            System.out.println(plaintext.read_byte(i));
-        }
-        System.out.println();
-        int size = plaintext.size_in_bytes;
-        DataArray ciphertext = DataArray.encrypt_DataArray_OFB(plaintext, new byte[16], new byte[16]);
-        DataArray plaintext_maybe = DataArray.decrypt_DataArray_OFB(ciphertext, new byte[16], new byte[16], size);
-        for(int i = 0; i < plaintext.size_in_bytes; i++){
-            System.out.println(plaintext_maybe.read_byte(i));
-        }
-    }
-
-     */
 }

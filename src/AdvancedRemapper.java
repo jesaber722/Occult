@@ -1,12 +1,6 @@
 import AES.AES128Generator;
-import AES.AESLibrary;
-
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
 
 
 /**
@@ -21,6 +15,10 @@ public class AdvancedRemapper implements ImageRemapper{
     private final int trueSize;
     public final int [] locationValues;
 
+    /**
+     * Create the remapper given the image and key.
+     * The key is used as salt during the remapping.
+     */
     public AdvancedRemapper(BufferedImage img, byte [] key){
         this.img = img;
         this.width = img.getWidth();
@@ -145,15 +143,4 @@ public class AdvancedRemapper implements ImageRemapper{
         return trueSize;
     }
 
-    public static void main(String [] args){
-        try {
-            BufferedImage img = ImageIO.read(new File("C:\\Users\\jesab\\Desktop\\AnalysisOfFolders\\Occult\\PNGS\\dog-unsolicited.png"));
-            AdvancedRemapper remapper = new AdvancedRemapper(img, new byte[16]);
-            for(int i = 0; i < 100; i++) {
-                System.out.println("location_values["+i+"]: " + remapper.locationValues[i]);
-            }
-        } catch(IOException e){
-            e.printStackTrace();
-        }
-    }
 }
