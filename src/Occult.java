@@ -9,6 +9,10 @@ import java.util.Calendar;
 import java.util.Scanner;
 import javax.imageio.ImageIO;
 
+
+/**
+ * the entry point for the program, where the high level work for the revealing/hiding is done 
+ */
 public class Occult {
 
     private static final int NUM_IV_BYTES = 8;
@@ -17,6 +21,9 @@ public class Occult {
     private static final int NUM_MAC_BYTES = 16;
     public static final byte [] DUMMY = {27, -110, -98, -8, -84, -61, 114, -9, -58, 127, 32, 1, 57, -77, 40, 55};
 
+    /**
+     * converts all images to the proper format
+     */
     private static BufferedImage toRGB24(BufferedImage src) {
         if (src.getType() == BufferedImage.TYPE_INT_RGB) return src;
         BufferedImage better = new BufferedImage(src.getWidth(), src.getHeight(), BufferedImage.TYPE_INT_RGB);
@@ -79,7 +86,6 @@ public class Occult {
             }
 
             if(size > reader.getTrueSize() / 8 || size < 0){
-                //System.out.println("size wrong");
                 System.out.println("Could not verify integrity of the data.");
                 return;
             }
@@ -94,7 +100,6 @@ public class Occult {
                 System.out.println("Could not verify integrity of the data.");
                 return;
             }
-            //System.out.println("We're in business.");
             int split_index = 0;
             while(file_name_and_data.read_byte(split_index) != (byte)0)
                 split_index++;
@@ -286,6 +291,9 @@ public class Occult {
         }
 
         boolean use_simple = false;
+        if(raw != null && raw.equals("y")){
+            use_simple = true;
+        }
         if(simple != null && simple.equals("y")){
             use_simple = true;
         }
