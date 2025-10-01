@@ -60,7 +60,6 @@ public class Occult {
             ImageRemapper reader = simple? new SimpleRemapper(img) : new AdvancedRemapper(img, key);
             DataArray IV = new DataArray(NUM_IV_BYTES);
             DataArray MAC = new DataArray(NUM_MAC_BYTES);
-            DataArray size_data = new DataArray(NUM_SIZE_BYTES);
 
             for(int i = 0; i < 8 *  NUM_IV_BYTES; i++){
                 IV.write_bit(reader.read(i), i);
@@ -69,11 +68,25 @@ public class Occult {
                 MAC.write_bit(reader.read(i + 8 * NUM_IV_BYTES), i);
             }
 
-            for(int i = 0; i < 8 * NUM_SIZE_BYTES; i++){
+            int size = 0;
+
+            int size_stored;
+            if (key != null) {
+                size_stored = NUM_SIZE_BYTES;
+            } else {
+                // if in raw mode, we did not pad size to AES block size
+                size_stored = TRUE_NUM_SIZE_BYTES;
+            }
+
+            DataArray size_data = new DataArray(size_stored);
+
+            for(int i = 0; i < 8 * size_stored; i++){
                 size_data.write_bit(reader.read(i + 8 * (NUM_IV_BYTES + NUM_MAC_BYTES)), i);
             }
-            size_data = DataArray.decrypt_DataArray_OFB(size_data, key, IV.toByteArray(), TRUE_NUM_SIZE_BYTES);
-            int size = 0;
+
+            if(key != null)
+                size_data = DataArray.decrypt_DataArray_OFB(size_data, key, IV.toByteArray(), TRUE_NUM_SIZE_BYTES);
+
             for(int i = size_data.size_in_bytes - 1; i >= 0; i--){
                 int n = size_data.read_byte(i);
                 if(n < 0){
@@ -90,12 +103,19 @@ public class Occult {
                 return;
             }
             //System.out.println(size);
-            int encr_size = size % 16 == 0? size : size + 16 - size % 16;
+            int encr_size;
+            if(key != null)
+                encr_size = size % 16 == 0? size : size + 16 - size % 16;
+            else
+                encr_size = size;
             DataArray file_name_and_data = new DataArray(encr_size);
             for(int i = 0; i < 8 * encr_size; i++){
-                file_name_and_data.write_bit(reader.read(i + 8 * (NUM_IV_BYTES + NUM_MAC_BYTES + NUM_SIZE_BYTES)), i);
+                file_name_and_data.write_bit(reader.read(i + 8 * (NUM_IV_BYTES + NUM_MAC_BYTES + size_stored)), i);
             }
-            file_name_and_data = DataArray.decrypt_DataArray_OFB(file_name_and_data, key, IV.toByteArray(), size);
+            if(key != null)
+                file_name_and_data = DataArray.decrypt_DataArray_OFB(file_name_and_data, key, IV.toByteArray(), size);
+            
+            // compare the MAC against what is produced by the data to see if it is valid
             if(!new DataArray(file_name_and_data.produce_MAC(key)).equals(MAC)){
                 System.out.println("Could not verify integrity of the data.");
                 return;
@@ -147,28 +167,25 @@ public class Occult {
             }
             // get the IV
             long time = Calendar.getInstance().getTimeInMillis();
-            //System.out.println(time);
             DataArray IV = new DataArray(NUM_IV_BYTES);
             for(int i = 0; i < IV.size_in_bytes; i++){
                 IV.writeByte((byte)(time % 256), i);
-                //System.out.println(IV[i] + " IV"+i);
                 time = time >>> 8;
             }
-            /*
-            for(int i = 0; i < IV.size_in_bytes; i++){
-                System.out.println(IV.read_byte(i));
-            }
-             */
+
             // get the size
             int orig_size = file_name_and_data.size_in_bytes;
-            //System.out.println(orig_size);
             DataArray size_data = new DataArray(TRUE_NUM_SIZE_BYTES);
             for(int i = 0 ; i < TRUE_NUM_SIZE_BYTES; i++){
                 size_data.writeByte((byte)(orig_size % 256), i);
                 orig_size = orig_size >>> 8;
             }
+
+            // produce the MAC from the file name and data so receiver can check if message is valid
             DataArray MAC = new DataArray(file_name_and_data.produce_MAC(key));
+
             if(key != null) {
+                // encrypt the data and the size so not even file size can be known
                 size_data = DataArray.encrypt_DataArray_OFB(size_data, key, IV.toByteArray());
                 file_name_and_data = DataArray.encrypt_DataArray_OFB(file_name_and_data, key, IV.toByteArray());
             }
@@ -196,6 +213,9 @@ public class Occult {
         return;
     }
 
+    /**
+     * print the usage message
+     */
     private static void usage(){
         System.out.println("Occult picture.png [--hide file] [--out file] [--raw] [--simple]");
     }
