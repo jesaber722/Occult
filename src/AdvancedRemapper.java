@@ -8,6 +8,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
+
+/**
+ * Maps data into an image in a pseudorandom pixel order, with no apparent pattern.
+ */
 public class AdvancedRemapper implements ImageRemapper{
 
     private final BufferedImage img;
@@ -35,18 +39,19 @@ public class AdvancedRemapper implements ImageRemapper{
         byte [] seed = new byte[16];
         for(int i = 0; i < trueSize; i+=16) {
             for(int j = 0; j < 16 && j + i < trueSize; j++) {
-                int row = (int) (i / trueWidth);
-                int col = (int) ((i % trueWidth) / 3);
-                int field = (int) (i % 3);
+                int idx = i + j;
+                int row = (int) (idx / trueWidth);
+                int col = (int) ((idx % trueWidth) / 3);
+                int field = (int) (idx % 3);
                 byte value = 0;
                 switch(field) {
                     default:
                     case 0:
-                        value = (byte) (new Color(img.getRGB(col, row)).getRed() & -2);
+                        value = (byte) (new Color(img.getRGB(col, row)).getRed() & -2); break;
                     case 1:
-                        value = (byte) (new Color(img.getRGB(col, row)).getGreen() & -2);
+                        value = (byte) (new Color(img.getRGB(col, row)).getGreen() & -2); break;
                     case 2:
-                        value = (byte) (new Color(img.getRGB(col, row)).getBlue() & -2);
+                        value = (byte) (new Color(img.getRGB(col, row)).getBlue() & -2); break;
                 }
                 seed[j] = value;
             }
